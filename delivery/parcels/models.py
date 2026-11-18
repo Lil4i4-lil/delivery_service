@@ -61,6 +61,13 @@ class Parcel(models.Model):
         decimal_places=2,
         verbose_name='Стоимость, USD',
     )
+    delivery_cost = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name='Стоимость доставки, RUB',
+    )
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата создания'
@@ -97,7 +104,9 @@ class Parcel(models.Model):
                 name='cost_non_negative',
             ),
         ]
-
+        indexes = [
+            models.Index(fields=['user']),
+        ]
 
     def __str__(self) -> str:
         return f'{self.name} ({self.id})'
