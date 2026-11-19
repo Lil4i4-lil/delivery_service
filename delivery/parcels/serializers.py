@@ -70,7 +70,10 @@ class ParcelCreateSerializer(serializers.ModelSerializer):
 class ParcelReadSerializer(serializers.ModelSerializer):
     """Сериализатор для получения информации о посылке"""
 
-    parcel_type = ParcelTypeSerializer(read_only=True)
+    parcel_type = serializers.SlugRelatedField(
+        slug_field='name',
+        queryset=ParcelType.objects.all(),
+    )
     delivery_cost = serializers.SerializerMethodField()
 
     class Meta:
@@ -83,7 +86,6 @@ class ParcelReadSerializer(serializers.ModelSerializer):
             'parcel_type',
             'delivery_cost',
             'created_at',
-            'updated_at',
         )
 
     def get_delivery_cost(self, obj: Parcel) -> str | float:

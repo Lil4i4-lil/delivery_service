@@ -39,7 +39,7 @@ class ParcelAdmin(admin.ModelAdmin):
             'fields': ('id', 'name', 'user', 'parcel_type'),
         }),
         ('Параметры посылки', {
-            'fields': ('weight', 'cost', 'delivery_cost_rub'),
+            'fields': ('weight', 'cost'),
         }),
         ('Служебное', {
             'fields': ('created_at', 'updated_at'),

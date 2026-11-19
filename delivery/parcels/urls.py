@@ -10,7 +10,7 @@ app_name = 'parcels'
 
 
 urlpatterns = [
-    path('parcel-type/', parcel_type_list, name='parcel-type-list'),
-    path('parcels/', ParcelListCreateView.as_view(), name='parcel-list-create'),
-    path('parcels/<uuid:pk>/', ParcelDetailView.as_view(), name='parcel-detail'),
+    path('parcel-types/', parcel_type_list, name='parcel-types-list'),
+    path('parcels/', ParcelListCreateView.as_view(), name='parcels-list-create'),
+    path('parcels/<uuid:pk>/', ParcelDetailView.as_view(), name='parcels-detail'),
 ]

@@ -75,7 +75,7 @@ class Parcel(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True,
         verbose_name='Дата обновления'
-    )
+    ) # Удалить
 
     parcel_type = models.ForeignKey(
         ParcelType,

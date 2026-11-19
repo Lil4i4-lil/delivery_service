@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
@@ -16,6 +17,9 @@ def parcel_type_list(request: Request) -> Response:
 
 
 class ParcelListCreateView(generics.ListCreateAPIView):
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('name', 'parcel_type__name')
+
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = PageNumberPagination
 
