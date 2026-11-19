@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 
 from .models import Parcel, ParcelType
+from .permissions import isOwner
 from .serializers import ParcelTypeSerializer, ParcelCreateSerializer, ParcelReadSerializer
 
 
@@ -21,6 +22,7 @@ class ParcelListCreateView(generics.ListCreateAPIView):
     filterset_fields = ('name', 'parcel_type__name')
 
     permission_classes = [permissions.IsAuthenticated]
+
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
@@ -61,8 +63,9 @@ class ParcelListCreateView(generics.ListCreateAPIView):
 
 
 class ParcelDetailView(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [isOwner]
     serializer_class = ParcelReadSerializer
+    queryset = Parcel
 
-    def get_queryset(self):
-        return Parcel.objects.filter(user=self.request.user).select_related('parcel_type')
+    # def get_queryset(self):
+    #     return Parcel.objects.filter(user=self.request.user).select_related('parcel_type')
