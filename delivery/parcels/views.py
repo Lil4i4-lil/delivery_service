@@ -1,9 +1,10 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, throttle_scope
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
 
 from .models import Parcel, ParcelType
@@ -13,6 +14,7 @@ from .tasks import calculate_delivery_costs
 
 
 @api_view(['GET'])
+@throttle_scope('parcel_types_list')
 def parcel_type_list(request: Request) -> Response:
     parcel_types = ParcelType.objects.all()
     serializer = ParcelTypeSerializer(parcel_types, many=True)
@@ -22,10 +24,9 @@ def parcel_type_list(request: Request) -> Response:
 class ParcelListCreateView(generics.ListCreateAPIView):
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('name', 'parcel_type__name')
-
     permission_classes = [permissions.IsAuthenticated]
-
     pagination_class = PageNumberPagination
+    throttle_scope = 'parcels_list_create'
 
     def get_queryset(self):
         qs = (
@@ -66,6 +67,8 @@ class ParcelListCreateView(generics.ListCreateAPIView):
 
 class ParcelDetailView(generics.RetrieveAPIView):
     permission_classes = [isOwner]
+    throttle_scope = 'parcels_detail'
+
     serializer_class = ParcelReadSerializer
     queryset = Parcel
 

@@ -155,7 +155,17 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'parcel_types_list': '10/min',
+        'parcels_list_create': '10/min',
+        'parcels_detail': '1/sec',
+    }
 }
+
+
 
 # ----- Настройки аутентификации -----
 
