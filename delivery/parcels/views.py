@@ -1,13 +1,15 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.views import APIView
 
 from .models import Parcel, ParcelType
 from .permissions import isOwner
 from .serializers import ParcelTypeSerializer, ParcelCreateSerializer, ParcelReadSerializer
+from .tasks import calculate_delivery_costs
 
 
 @api_view(['GET'])
@@ -69,3 +71,16 @@ class ParcelDetailView(generics.RetrieveAPIView):
 
     # def get_queryset(self):
     #     return Parcel.objects.filter(user=self.request.user).select_related('parcel_type')
+
+
+class RecalculateDeliveryCostsView(APIView):
+    """Ручной запуск пересчёта стоимости доставки."""
+
+    permission_classes = [permissions.IsAdminUser]
+
+    def post(self, request):
+        calculate_delivery_costs.delay()
+        return Response(
+            {'status': 'Задача поставлена в очередь'},
+            status=status.HTTP_202_ACCEPTED,
+        )
