@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django_celery_beat',
+    'drf_spectacular',
 
     'parcels.apps.ParcelsConfig',
     'users.apps.UsersConfig',
@@ -162,7 +163,8 @@ REST_FRAMEWORK = {
         'parcel_types_list': '10/min',
         'parcels_list_create': '10/min',
         'parcels_detail': '1/sec',
-    }
+    },
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # ----- Настройки аутентификации -----
@@ -213,4 +215,25 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1'),
     }
+}
+
+
+# ----- Настройки OpenAPI -----
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Delivery Service API',
+    'DESCRIPTION': 'Cервис доставки 📦',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SECURITY': [{'jwtAuth': []}],
+    'APPEND_COMPONENTS': {
+        'securitySchemes': {
+            'jwtAuth': {
+                'type': 'http',
+                'scheme': 'bearer',
+                'bearerFormat': 'JWT',
+            }
+        }
+    },
 }
