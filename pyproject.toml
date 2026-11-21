@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.12"
 dependencies = [
     "adrf>=0.1.14",
+    "apiclient>=1.0.4",
     "celery>=5.7.0",
     "celery-types>=0.26.0",
     "django==6.0.10",
@@ -25,6 +26,8 @@ dependencies = [
     "httpx>=0.28.1",
     "packaging>=26.3",
     "psycopg2-binary>=2.9.13",
+    "pytest>=9.2.0",
+    "pytest-django>=4.14.0",
     "redis>=8.1.0",
     "requests>=2.34.2",
 ]
@@ -35,3 +38,8 @@ delivery-service = "delivery_service:main"
 [build-system]
 requires = ["uv_build>=0.12.19,<0.13.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest-django>=4.14.0",
+]

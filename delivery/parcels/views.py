@@ -23,7 +23,7 @@ def parcel_type_list(request: Request) -> Response:
 
 class ParcelListCreateView(generics.ListCreateAPIView):
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('name', 'parcel_type__name')
+    filterset_fields = ('name', 'delivery_cost', 'parcel_type__name')
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = PageNumberPagination
     throttle_scope = 'parcels_list_create'
@@ -42,9 +42,9 @@ class ParcelListCreateView(generics.ListCreateAPIView):
 
         calculated = self.request.query_params.get('calculated')
         if calculated == 'true':
-            qs = qs.filter(delivery_cost_rub__isnull=False)
+            qs = qs.filter(delivery_cost__isnull=False)
         elif calculated == 'false':
-            qs = qs.filter(delivery_cost_rub__isnull=True)
+            qs = qs.filter(delivery_cost__isnull=True)
 
         return qs
 

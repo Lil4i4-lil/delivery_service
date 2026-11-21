@@ -1,9 +1,12 @@
 import uuid
+from decimal import Decimal
 
 from django.conf import settings
 from django.db import models
 
 from delivery.constants import (
+    FORMULA_WEIGHT_COEFFICIENT,
+    FORMULA_COST_COEFFICIENT,
     PARCEL_NAME_MAX_LENGTH,
     PARCEL_TYPE_NAME_MAX_LENGTH,
     PARCEL_TYPE_CLOTHES,
@@ -121,3 +124,10 @@ class Parcel(models.Model):
 
     def __str__(self) -> str:
         return f'{self.name} ({self.id})'
+
+    def calculate_delivery_cost(self, usd_rate: Decimal) -> Decimal:
+        """Возвращает стоимость доставки в рублях."""
+        return (
+                self.weight * Decimal(FORMULA_WEIGHT_COEFFICIENT)
+                + self.cost * Decimal(FORMULA_COST_COEFFICIENT)
+        ) * usd_rate
