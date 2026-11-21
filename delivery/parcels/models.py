@@ -107,6 +107,10 @@ class Parcel(models.Model):
                 name='weight_positive',
             ),
             models.CheckConstraint(
+                condition=models.Q(weight__lte=PARCEL_MAX_WEIGHT),
+                name='weight_lte_100',
+            ),
+            models.CheckConstraint(
                 condition=models.Q(cost__gte=PARCEL_MIN_COST),
                 name='cost_non_negative',
             ),
