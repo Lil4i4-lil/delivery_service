@@ -5,11 +5,14 @@ import requests
 from django.core.cache import cache
 from django.conf import settings
 
-logger = logging.getLogger(__name__)
+from delivery.constants import (
+    CBR_URL,
+    CACHE_KEY,
+    CACHE_TIMEOUT,
+    REQUEST_TIMEOUT,
+)
 
-CBR_URL = 'https://www.cbr-xml-daily.ru/daily_json.js'
-CACHE_KEY = 'cbr_usd_rate'
-CACHE_TIMEOUT = 60 * 60  # 1 час
+logger = logging.getLogger(__name__)
 
 
 def get_usd_rate() -> Decimal:
@@ -22,7 +25,7 @@ def get_usd_rate() -> Decimal:
         return Decimal(str(cached))
 
     try:
-        response = requests.get(CBR_URL, timeout=10)
+        response = requests.get(CBR_URL, timeout=REQUEST_TIMEOUT)
         response.raise_for_status()
         data = response.json()
         rate = data['Valute']['USD']['Value']

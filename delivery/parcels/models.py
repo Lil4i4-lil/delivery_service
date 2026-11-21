@@ -8,7 +8,14 @@ from delivery.constants import (
     PARCEL_TYPE_NAME_MAX_LENGTH,
     PARCEL_TYPE_CLOTHES,
     PARCEL_TYPE_ELECTRONICS,
-    PARCEL_TYPE_OTHER
+    PARCEL_TYPE_OTHER,
+    PARCEL_WEIGHT_MAX_DIGITS,
+    PARCEL_WEIGHT_DECIMAL_PLACES,
+    PARCEL_COST_MAX_DIGITS,
+    PARCEL_COST_DECIMAL_PLACES,
+    PARCEL_MIN_WEIGHT,
+    PARCEL_MAX_WEIGHT,
+    PARCEL_MIN_COST,
 )
 from users.models import User
 
@@ -52,18 +59,18 @@ class Parcel(models.Model):
         verbose_name = 'Название',
     )
     weight = models.DecimalField(
-        max_digits=8,
-        decimal_places=3,
+        max_digits=PARCEL_WEIGHT_MAX_DIGITS,
+        decimal_places=PARCEL_WEIGHT_DECIMAL_PLACES,
         verbose_name='Вес, кг',
     )
     cost = models.DecimalField(
-        max_digits=12,
-        decimal_places=2,
+        max_digits=PARCEL_COST_MAX_DIGITS,
+        decimal_places=PARCEL_COST_DECIMAL_PLACES,
         verbose_name='Стоимость, USD',
     )
     delivery_cost = models.DecimalField(
-        max_digits=12,
-        decimal_places=2,
+        max_digits=PARCEL_COST_MAX_DIGITS,
+        decimal_places=PARCEL_COST_DECIMAL_PLACES,
         null=True,
         blank=True,
         verbose_name='Стоимость доставки, RUB',
@@ -96,11 +103,11 @@ class Parcel(models.Model):
         ordering = ['-created_at']
         constraints = [
             models.CheckConstraint(
-                condition=models.Q(weight__gt=0),
+                condition=models.Q(weight__gt=PARCEL_MIN_WEIGHT),
                 name='weight_positive',
             ),
             models.CheckConstraint(
-                condition=models.Q(cost__gte=0),
+                condition=models.Q(cost__gte=PARCEL_MIN_COST),
                 name='cost_non_negative',
             ),
         ]

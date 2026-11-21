@@ -61,7 +61,7 @@ class ParcelListCreateView(generics.ListCreateAPIView):
         parcel = serializer.save()
         return Response(
             ParcelReadSerializer(parcel, context={'request': request}).data,
-            status=201,
+            status=status.HTTP_201_CREATED,
         )
 
 
