@@ -58,6 +58,5 @@ class SupportAskView(APIView):
             )
 
         return Response({
-            "answer": answer,
-            "sources": [meta.get('source') for meta in results.get('metadatas', [[]])[0]],
+            "answer": answer
         })
