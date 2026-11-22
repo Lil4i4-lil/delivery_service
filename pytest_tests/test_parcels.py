@@ -2,7 +2,6 @@ from decimal import Decimal
 from unittest.mock import patch
 
 import pytest
-from django.urls import reverse
 from rest_framework import status
 
 from parcels.models import ParcelType, Parcel

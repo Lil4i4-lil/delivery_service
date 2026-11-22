@@ -12,6 +12,7 @@ dependencies = [
     "apiclient>=1.0.4",
     "celery>=5.7.0",
     "celery-types>=0.26.0",
+    "chromadb>=1.5.9",
     "django==6.0.10",
     "django-allauth>=65.22.1",
     "django-celery-beat==2.9.0",
@@ -24,12 +25,15 @@ dependencies = [
     "djoser>=2.3.5",
     "drf-spectacular>=0.30.0",
     "httpx>=0.28.1",
+    "openai>=3.57.0",
     "packaging>=26.3",
     "psycopg2-binary>=2.9.13",
     "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
     "pytest-django>=4.14.0",
     "redis>=8.1.0",
     "requests>=2.34.2",
+    "sentence-transformers>=6.3.0",
 ]
 
 [project.scripts]

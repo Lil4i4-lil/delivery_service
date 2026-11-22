@@ -63,6 +63,7 @@ INSTALLED_APPS = [
 
     'parcels.apps.ParcelsConfig',
     'users.apps.UsersConfig',
+    'support.apps.SupportConfig',
 ]
 
 MIDDLEWARE = [
