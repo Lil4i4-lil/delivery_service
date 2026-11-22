@@ -25,6 +25,7 @@ dependencies = [
     "djoser>=2.3.5",
     "drf-spectacular>=0.30.0",
     "httpx>=0.28.1",
+    "loguru>=0.8.0",
     "openai>=3.57.0",
     "packaging>=26.3",
     "psycopg2-binary>=2.9.13",

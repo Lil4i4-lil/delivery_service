@@ -4,8 +4,8 @@ from rest_framework.decorators import api_view, throttle_scope
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
+from loguru import logger
 
 from .models import Parcel, ParcelType
 from .permissions import isOwner
@@ -58,7 +58,22 @@ class ParcelListCreateView(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        logger.bind(component="parcels").info(
+            "Создание посылки: user_id={user_id}, type={parcel_type}, weight={weight}",
+            user_id=request.user.id,
+            parcel_type=serializer.validated_data.get("parcel_type"),
+            weight=serializer.validated_data.get("weight"),
+        )
+
         parcel = serializer.save()
+
+        logger.bind(component="parcels").info(
+            "Посылка создана: id={parcel_id}, user_id={user_id}",
+            parcel_id=parcel.id,
+            user_id=request.user.id,
+        )
+
         return Response(
             ParcelReadSerializer(parcel, context={'request': request}).data,
             status=status.HTTP_201_CREATED,

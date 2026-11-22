@@ -1,7 +1,7 @@
-import logging
 from decimal import Decimal
 
 from celery import shared_task
+from loguru import logger
 
 from .models import Parcel
 from .services import get_usd_rate
@@ -11,9 +11,6 @@ from delivery.constants import (
     FORMULA_WEIGHT_COEFFICIENT,
     FORMULA_COST_COEFFICIENT,
 )
-
-
-logger = logging.getLogger(__name__)
 
 
 @shared_task(
@@ -26,10 +23,13 @@ def calculate_delivery_costs(self):
     Рассчитывает стоимость доставки для всех посылок,
     у которых delivery_cost = NULL.
     """
+    task_logger = logger.bind(component="celery", task_id=self.request.id, task_name=self.name)
+    task_logger.info("Начало вычисления стоимости доставки")
+
     try:
         usd_rate = get_usd_rate()
     except Exception as exc:
-        logger.error('Не удалось получить курс USD: %s', exc)
+        task_logger.error("Не удалось получить курс USD: {exc}", exc=exc)
         raise self.retry(exc=exc)
 
     unprocessed = Parcel.objects.filter(delivery_cost__isnull=True)
@@ -45,8 +45,9 @@ def calculate_delivery_costs(self):
         parcel.save(update_fields=['delivery_cost', 'updated_at'])
         updated_count += 1
 
-    logger.info(
-        'Рассчитана стоимость доставки для %s посылок (курс: %s)',
-        updated_count, usd_rate
+    task_logger.info(
+        'Рассчитана стоимость доставки для {updated} посылок (курс: {rate})',
+        updated=updated_count,
+        rate=usd_rate
     )
     return updated_count
