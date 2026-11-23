@@ -1,15 +1,15 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from loguru import logger
 from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view, throttle_scope
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import APIView
-from loguru import logger
 
 from .models import Parcel, ParcelType
 from .permissions import isOwner
-from .serializers import ParcelTypeSerializer, ParcelCreateSerializer, ParcelReadSerializer
+from .serializers import ParcelCreateSerializer, ParcelReadSerializer, ParcelTypeSerializer
 from .tasks import calculate_delivery_costs
 
 
@@ -34,8 +34,7 @@ class ParcelListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         qs = (
-            Parcel.objects
-            .filter(user=self.request.user)
+            Parcel.objects.filter(user=self.request.user)
             .select_related('parcel_type')
             .order_by('-created_at')
         )
@@ -53,27 +52,23 @@ class ParcelListCreateView(generics.ListCreateAPIView):
         return qs
 
     def get_serializer_class(self):
-        return (
-            ParcelCreateSerializer
-            if self.request.method == 'POST'
-            else ParcelReadSerializer
-        )
+        return ParcelCreateSerializer if self.request.method == 'POST' else ParcelReadSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        logger.bind(component="parcels").info(
-            "Создание посылки: user_id={user_id}, type={parcel_type}, weight={weight}",
+        logger.bind(component='parcels').info(
+            'Создание посылки: user_id={user_id}, type={parcel_type}, weight={weight}',
             user_id=request.user.id,
-            parcel_type=serializer.validated_data.get("parcel_type"),
-            weight=serializer.validated_data.get("weight"),
+            parcel_type=serializer.validated_data.get('parcel_type'),
+            weight=serializer.validated_data.get('weight'),
         )
 
         parcel = serializer.save()
 
-        logger.bind(component="parcels").info(
-            "Посылка создана: id={parcel_id}, user_id={user_id}",
+        logger.bind(component='parcels').info(
+            'Посылка создана: id={parcel_id}, user_id={user_id}',
             parcel_id=parcel.id,
             user_id=request.user.id,
         )

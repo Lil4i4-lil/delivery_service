@@ -35,13 +35,22 @@ class ParcelAdmin(admin.ModelAdmin):
     list_select_related = ('user', 'parcel_type')
 
     fieldsets = (
-        (None, {
-            'fields': ('id', 'name', 'user', 'parcel_type'),
-        }),
-        ('Параметры посылки', {
-            'fields': ('weight', 'cost'),
-        }),
-        ('Служебное', {
-            'fields': ('created_at', 'updated_at'),
-        }),
+        (
+            None,
+            {
+                'fields': ('id', 'name', 'user', 'parcel_type'),
+            },
+        ),
+        (
+            'Параметры посылки',
+            {
+                'fields': ('weight', 'cost'),
+            },
+        ),
+        (
+            'Служебное',
+            {
+                'fields': ('created_at', 'updated_at'),
+            },
+        ),
     )

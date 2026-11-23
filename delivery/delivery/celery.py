@@ -1,12 +1,9 @@
-import os
 import logging
+import os
 
 from celery import Celery
 from celery.signals import setup_logging as celery_setup_logging
 from loguru import logger
-
-from delivery.logging_setup import setup_logging
-
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'delivery.settings')
 
@@ -25,7 +22,9 @@ class InterceptHandler(logging.Handler):
             level = logger.level(record.levelname).name
         except ValueError:
             level = record.levelno
-        logger.bind(component="celery").opt(depth=6, exception=record.exc_info).log(level, record.getMessage())
+        logger.bind(component='celery').opt(depth=6, exception=record.exc_info).log(
+            level, record.getMessage()
+        )
 
 
 @celery_setup_logging.connect

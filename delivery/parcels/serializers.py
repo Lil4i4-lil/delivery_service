@@ -2,13 +2,9 @@ from decimal import Decimal
 
 from rest_framework import serializers
 
+from delivery.constants import PARCEL_MAX_WEIGHT, PARCEL_MIN_COST, PARCEL_MIN_WEIGHT
 
 from .models import Parcel, ParcelType
-from delivery.constants import (
-    PARCEL_MAX_WEIGHT,
-    PARCEL_MIN_WEIGHT,
-    PARCEL_MIN_COST
-)
 
 
 class ParcelTypeSerializer(serializers.ModelSerializer):
@@ -60,9 +56,7 @@ class ParcelCreateSerializer(serializers.ModelSerializer):
 
     def validate_cost(self, value: Decimal) -> Decimal:
         if value < PARCEL_MIN_COST:
-            raise serializers.ValidationError(
-                'Стоимость содержимого не может быть отрицательной.'
-            )
+            raise serializers.ValidationError('Стоимость содержимого не может быть отрицательной.')
         return value
 
     def create(self, validated_data: dict) -> Parcel:

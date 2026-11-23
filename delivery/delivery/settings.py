@@ -9,11 +9,12 @@ https://docs.djangoproject.com/en/6.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
-import environ
-import os
+
 from datetime import timedelta
+import os
 from pathlib import Path
 
+import environ
 
 env = environ.Env()
 
@@ -49,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'django.contrib.sites',
     'rest_framework',
     'djoser',
@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'django_celery_beat',
     'drf_spectacular',
-
     'parcels.apps.ParcelsConfig',
     'users.apps.UsersConfig',
     'support.apps.SupportConfig',
@@ -142,9 +141,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    (BASE_DIR / 'static/'),
-)
+STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration

@@ -1,14 +1,13 @@
-import logging
 from decimal import Decimal
+import logging
 
-import requests
 from django.core.cache import cache
-from django.conf import settings
+import requests
 
 from delivery.constants import (
-    CBR_URL,
     CACHE_KEY,
     CACHE_TIMEOUT,
+    CBR_URL,
     REQUEST_TIMEOUT,
 )
 

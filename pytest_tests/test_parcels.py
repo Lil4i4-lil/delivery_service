@@ -4,9 +4,8 @@ from unittest.mock import patch
 import pytest
 from rest_framework import status
 
-from parcels.models import ParcelType, Parcel
+from parcels.models import Parcel, ParcelType
 from parcels.tasks import calculate_delivery_costs
-
 
 # ----- Модели -----
 

@@ -1,7 +1,7 @@
 import pytest
 from rest_framework.test import APIClient
 
-from parcels.models import ParcelType, Parcel
+from parcels.models import Parcel, ParcelType
 
 
 # ----- Users -----

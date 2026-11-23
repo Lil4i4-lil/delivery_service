@@ -1,10 +1,10 @@
 from django.urls import path
 
 from .views import (
-    parcel_type_list,
     ParcelDetailView,
     ParcelListCreateView,
-    RecalculateDeliveryCostsView
+    RecalculateDeliveryCostsView,
+    parcel_type_list,
 )
 
 app_name = 'parcels'
@@ -16,7 +16,7 @@ urlpatterns = [
     path('parcels/<uuid:pk>/', ParcelDetailView.as_view(), name='parcels-detail'),
     path(
         'parcels/recalculate-costs/',
-         RecalculateDeliveryCostsView.as_view(),
-        name='parcel-recalculate-costs'
+        RecalculateDeliveryCostsView.as_view(),
+        name='parcel-recalculate-costs',
     ),
 ]

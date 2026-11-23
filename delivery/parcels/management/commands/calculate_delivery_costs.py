@@ -11,6 +11,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write('Запуск расчёта стоимости доставки...')
         updated = calculate_delivery_costs()
-        self.stdout.write(
-            self.style.SUCCESS(f'Готово. Обновлено посылок: {updated}')
-        )
+        self.stdout.write(self.style.SUCCESS(f'Готово. Обновлено посылок: {updated}'))
