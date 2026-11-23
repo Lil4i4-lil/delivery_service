@@ -1,11 +1,12 @@
-import os
 import sys
 
 from loguru import logger
 
 
 def setup_logging():
-    logger.remove()  # Убираем дефолтный sink
+
+
+    logger.remove()
 
     # Консоль (для разработки) — все логи
     logger.add(sys.stdout, level="DEBUG",
@@ -25,7 +26,7 @@ def setup_logging():
     # Файл для службы поддержки (support)
     logger.add(
         "logs/support.log",
-        level="DEBUG",  # В support полезно видеть DEBUG-логи (документы, промпты)
+        level="DEBUG",
         rotation="10 MB",
         retention="7 days",
         encoding="utf-8",

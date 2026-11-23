@@ -32,6 +32,7 @@ PARCEL_TYPE_CHOICES = [
 
 class ParcelType(models.Model):
     """Модель типа посылки"""
+
     name = models.CharField(
         max_length=PARCEL_TYPE_NAME_MAX_LENGTH,
         choices=PARCEL_TYPE_CHOICES,

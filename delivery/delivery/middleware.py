@@ -14,6 +14,8 @@ def get_request_id() -> str:
 
 
 class RequestIDMiddleware:
+    """Добавление id запроса в логи"""
+
     def __init__(self, get_response):
         self.get_response = get_response
         self.logger = logger.patch(
@@ -38,6 +40,14 @@ class RequestIDMiddleware:
 
 
 class RequestLoggingMiddleware:
+    """
+    Логирование запроса:
+    длительность всего запроса,
+
+    количество SQL-запросов,
+    длительность SQL-запросов
+    """
+
     def __init__(self, get_response):
         self.get_response = get_response
 

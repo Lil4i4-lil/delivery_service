@@ -12,6 +12,8 @@ from .services import collection
 
 
 class SupportAskView(APIView):
+    """Запрос к LLM"""
+
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -20,7 +22,7 @@ class SupportAskView(APIView):
         question = serializer.validated_data['question']
 
         rag_logger = logger.bind(component="support", question=question)
-        rag_logger.info("RAG request received")
+        rag_logger.info("RAG запрос получен")
         started_at = time.monotonic()
 
         # 1. Поиск в ChromaDB

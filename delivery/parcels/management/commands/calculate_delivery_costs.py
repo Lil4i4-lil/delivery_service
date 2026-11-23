@@ -4,6 +4,8 @@ from parcels.tasks import calculate_delivery_costs
 
 
 class Command(BaseCommand):
+    """Команда для запуска перерасчета стоимости посылки"""
+
     help = 'Рассчитать стоимость доставки для необработанных посылок (вне расписания)'
 
     def handle(self, *args, **options):

@@ -16,12 +16,16 @@ from .tasks import calculate_delivery_costs
 @api_view(['GET'])
 @throttle_scope('parcel_types_list')
 def parcel_type_list(request: Request) -> Response:
+    """Получение списка типов посылок"""
+
     parcel_types = ParcelType.objects.all()
     serializer = ParcelTypeSerializer(parcel_types, many=True)
     return Response(serializer.data)
 
 
 class ParcelListCreateView(generics.ListCreateAPIView):
+    """Создание и получение списка посылок"""
+
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('name', 'delivery_cost', 'parcel_type__name')
     permission_classes = [permissions.IsAuthenticated]
@@ -81,6 +85,8 @@ class ParcelListCreateView(generics.ListCreateAPIView):
 
 
 class ParcelDetailView(generics.RetrieveAPIView):
+    """Получение детальной информации о посылке по ее uuid"""
+
     permission_classes = [isOwner]
     throttle_scope = 'parcels_detail'
 
@@ -92,7 +98,7 @@ class ParcelDetailView(generics.RetrieveAPIView):
 
 
 class RecalculateDeliveryCostsView(APIView):
-    """Ручной запуск пересчёта стоимости доставки."""
+    """Ручной запуск пересчёта стоимости доставки"""
 
     permission_classes = [permissions.IsAdminUser]
 

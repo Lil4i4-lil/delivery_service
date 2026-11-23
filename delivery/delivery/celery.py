@@ -16,7 +16,11 @@ app.autodiscover_tasks()
 
 
 class InterceptHandler(logging.Handler):
+    """Мост между стандартным logging и loguru"""
+
     def emit(self, record):
+        """Перенаправляет одну запись стандартного логгера в Loguru."""
+
         try:
             level = logger.level(record.levelname).name
         except ValueError:
@@ -26,4 +30,6 @@ class InterceptHandler(logging.Handler):
 
 @celery_setup_logging.connect
 def config_loggers(*args, **kwargs):
+    """Инициализирует перехват логов Celery через InterceptHandler"""
+
     logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)

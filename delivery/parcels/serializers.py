@@ -12,7 +12,7 @@ from delivery.constants import (
 
 
 class ParcelTypeSerializer(serializers.ModelSerializer):
-    """Справочник типов: id, машинный код и человекочитаемое имя."""
+    """Сериализатор для получения списка типов"""
 
     display_name = serializers.CharField(
         source='get_name_display',
