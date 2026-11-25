@@ -17,4 +17,8 @@ if [ "${LOAD_KNOWLEDGE:-0}" = "1" ]; then
     python manage.py load_knowledge || true
 fi
 
+if [ "${COLLECT_STATIC:-0}" = "1" ]; then
+    python manage.py collectstatic --noinput
+fi
+
 exec "$@"
