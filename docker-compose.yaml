@@ -1,0 +1,108 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${DATABASE_DB_PROD}
+      POSTGRES_USER: ${DATABASE_USER_PROD}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD_PROD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-delivery}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    environment:
+      IS_PERSISTENT: "TRUE"
+      ANONYMIZED_TELEMETRY: "FALSE"
+    volumes:
+      - chromadata:/chroma/chroma
+    healthcheck:
+      test: [ "CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v2/heartbeat')\"" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["/app/docker/entrypoint.sh"]
+    working_dir: /app/delivery
+    command: ["/app/.venv/bin/gunicorn", "delivery.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "120"]
+    environment:
+      DATABASE_URL: postgres://${DATABASE_USER_PROD}:${DATABASE_PASSWORD_PROD}@${DATABASE_HOST_PROD}:${DATABASE_PORT_PROD}/${DATABASE_DB_PROD}
+      REDIS_URL: redis://redis:6379/0
+      CHROMA_HOST: chroma
+      CHROMA_PORT: 8000
+      YANDEX_API_KEY: ${YANDEX_API_KEY}
+      YANDEX_FOLDER_ID: ${YANDEX_FOLDER_ID}
+      YANDEX_MODEL: ${YANDEX_MODEL:-yandexgpt-lite/latest}
+      APP_ENV: prod
+      LOG_LEVEL: INFO
+      RUN_MIGRATIONS: "1"
+      LOAD_KNOWLEDGE: "1"
+      DEBUG: False
+      SECRET_KEY: ${SECRET_KEY}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      chroma: { condition: service_started }
+
+  worker:
+    build: { context: ., dockerfile: Dockerfile }
+    entrypoint: ["/app/docker/entrypoint.sh"]
+    working_dir: /app/delivery
+    command: ["/app/.venv/bin/celery", "-A", "delivery", "worker", "--loglevel=info", "--pool=solo"]
+    environment:
+      DATABASE_URL: postgres://${DATABASE_USER_PROD}:${DATABASE_PASSWORD_PROD}@${DATABASE_HOST_PROD}:${DATABASE_PORT_PROD}/${DATABASE_DB_PROD}
+      REDIS_URL: redis://redis:6379/0
+      CHROMA_HOST: chroma
+      CHROMA_PORT: 8000
+      YANDEX_API_KEY: ${YANDEX_API_KEY}
+      YANDEX_FOLDER_ID: ${YANDEX_FOLDER_ID}
+      APP_ENV: prod
+      LOG_LEVEL: INFO
+      DEBUG: False
+      SECRET_KEY: ${SECRET_KEY}
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      chroma: { condition: service_started }
+
+  beat:
+    build: { context: ., dockerfile: Dockerfile }
+    entrypoint: ["/app/docker/entrypoint.sh"]
+    working_dir: /app/delivery
+    command: ["/app/.venv/bin/celery", "-A", "delivery", "beat", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler", "--loglevel=info"]
+    environment:
+      DATABASE_URL: postgres://${DATABASE_USER_PROD}:${DATABASE_PASSWORD_PROD}@${DATABASE_HOST_PROD}:${DATABASE_PORT_PROD}/${DATABASE_DB_PROD}
+      REDIS_URL: redis://redis:6379/0
+      APP_ENV: prod
+      LOG_LEVEL: INFO
+      DEBUG: False
+      SECRET_KEY: ${SECRET_KEY}
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+volumes:
+  pgdata:
+  redisdata:
+  chromadata:

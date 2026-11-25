@@ -24,13 +24,11 @@ PROJECT_ROOT = BASE_DIR.parent
 
 env_file = PROJECT_ROOT / '.env'
 
-if not env_file.exists():
-    raise FileNotFoundError(
-        f'.env not found at {env_file}. Expected project layout: '
-        f'delivery_service/.env, delivery_service/delivery/manage.py'
-    )
-
-environ.Env.read_env(env_file, encoding='utf-8-sig')
+if env_file.exists():
+    environ.Env.read_env(env_file, encoding='utf-8-sig')
+else:
+    # Для Docker
+    pass
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
