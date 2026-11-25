@@ -11,6 +11,7 @@ done
 if [ "${RUN_MIGRATIONS:-0}" = "1" ]; then
     python manage.py migrate --noinput
     python manage.py seed_parcel_types
+    python manage.py seed_delivery_cost_task
 fi
 
 if [ "${LOAD_KNOWLEDGE:-0}" = "1" ]; then

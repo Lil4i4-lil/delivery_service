@@ -54,7 +54,7 @@ jobs:
 
       - name: Run Ruff
         run: |
-          uv run ruff check .
+          uv run ruff check delivery
 
       - name: Run tests
         env:

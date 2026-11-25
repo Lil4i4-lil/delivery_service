@@ -37,6 +37,8 @@ RUN useradd --create-home --uid 1000 app
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
 COPY --from=builder --chown=app:app /app /app
 
+RUN mkdir -p /app/delivery/staticfiles && chown -R app:app /app/delivery/staticfiles
+
 USER app
 
 EXPOSE 8000
