@@ -15,7 +15,6 @@ repos:
         pass_filenames: false
         always_run: true
         args: [ "-q", "--no-header" ]
-        stages: [ pre-push ]
 
       # Быстрая проверка: валиден ли docker-compose.yml
       - id: docker-compose-config
