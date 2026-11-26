@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd /app/delivery
+
+until python -c "import psycopg2, os; psycopg2.connect(os.environ['DATABASE_URL'])" 2>/dev/null; do
+    echo "Waiting for PostgreSQL..."
+    sleep 2
+done
+
+if [ "${RUN_MIGRATIONS:-0}" = "1" ]; then
+    python manage.py migrate --noinput
+    python manage.py seed_parcel_types
+    python manage.py seed_delivery_cost_task
+fi
+
+if [ "${LOAD_KNOWLEDGE:-0}" = "1" ]; then
+    python manage.py load_knowledge || true
+fi
+
+if [ "${COLLECT_STATIC:-0}" = "1" ]; then
+    python manage.py collectstatic --noinput
+fi
+
+exec "$@"

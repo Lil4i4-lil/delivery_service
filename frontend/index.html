@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery Service</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- Логин -->
+  <section id="login-section" class="card">
+    <h1>Delivery Service</h1>
+    <form id="login-form">
+      <label>Логин <input type="text" id="username" required></label>
+      <label>Пароль <input type="password" id="password" required></label>
+      <button type="submit">Войти</button>
+    </form>
+    <p id="login-error" class="error"></p>
+  </section>
+
+  <!-- Приложение -->
+  <section id="app-section" hidden>
+    <header class="topbar">
+      <span>Delivery Service</span>
+      <button id="logout-btn" class="secondary">Выйти</button>
+    </header>
+
+    <!-- Создание посылки -->
+    <div class="card">
+      <h2>Новая посылка</h2>
+      <form id="parcel-form">
+        <label>Название <input type="text" id="parcel-name" required></label>
+        <label>Вес, кг <input type="number" id="parcel-weight" step="0.001" min="0.001" required></label>
+        <label>Стоимость, USD <input type="number" id="parcel-cost" step="0.01" min="0" required></label>
+        <label>Тип
+          <select id="parcel-type" required>
+            <option value="clothes">Одежда</option>
+            <option value="electronics">Электроника</option>
+            <option value="other">Разное</option>
+          </select>
+        </label>
+        <button type="submit">Создать</button>
+      </form>
+      <p id="parcel-error" class="error"></p>
+    </div>
+
+    <!-- Список посылок -->
+    <div class="card">
+      <h2>Мои посылки</h2>
+      <table>
+        <thead>
+          <tr><th>Название</th><th>Вес</th><th>Стоимость</th><th>Тип</th><th>Доставка</th></tr>
+        </thead>
+        <tbody id="parcels-body"></tbody>
+      </table>
+    </div>
+
+    <!-- RAG-чат -->
+    <div class="card">
+      <h2>Служба поддержки</h2>
+      <div id="chat-log" class="chat-log"></div>
+      <form id="chat-form">
+        <input type="text" id="chat-question" placeholder="Можно ли отправить ноутбук?" required>
+        <button type="submit">Спросить</button>
+      </form>
+    </div>
+  </section>
+
+  <script src="/app.js"></script>
+</body>
+</html>
